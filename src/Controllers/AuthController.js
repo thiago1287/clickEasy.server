@@ -4,7 +4,6 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 
 
-
 router.post("/register", async(req,res) =>{
     const{name, email, password, confirmpassword} = req.body
     if(!name){
@@ -59,7 +58,9 @@ router.post("/register", async(req,res) =>{
     }
     
 })
-router.get("/get", async (req, res) => {
+
+//puxar todos usuarios
+router.get("/Users", async (req, res) => {
     try {
       const users = await prisma.user.findMany({});
       res.status(200).json(users);
@@ -67,5 +68,33 @@ router.get("/get", async (req, res) => {
       res.status(500).json({ msg: "Erro ao buscar usuários" });
     }
   });
+
+
+//puxar usuario unico pelo id
+router.get("/user/:id", async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: String(id), // Certifique-se de converter o `id` para um número, se necessário
+      },
+    });
+  
+    if (!user) {
+      return res.status(404).json({ msg: "Usuário não encontrado" });
+    }
+  
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ msg: "Erro ao buscar usuário" });
+    }
+});
+
+
+
+
+
+
 
 module.exports = router;

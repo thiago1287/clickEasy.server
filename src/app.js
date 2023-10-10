@@ -11,7 +11,6 @@ app.use(express.json());
 app.use('/auth', Authcontroller)
 app.use('/schedule', ScheduleController)
 
-
 app.listen(3001, () => {
     console.log('Server Online')
 })
