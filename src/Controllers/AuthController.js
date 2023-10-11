@@ -92,6 +92,35 @@ router.get("/user/:id", async (req, res) => {
 });
 
 
+router.put("/user/:id", async (req, res) => {
+  const { id } = req.params;
+  const data = req.body; 
+
+  try {
+    
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        id: String(id), 
+      },
+    });
+
+    if (!existingUser) {
+      return res.status(404).json({ msg: "Usuário não encontrado" });
+    }
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: String(id),
+      },
+      data,
+    });
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Erro ao atualizar usuário" });
+  }
+});
+
 
 
 
