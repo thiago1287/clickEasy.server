@@ -27,6 +27,5 @@ router.post("/agendamento", async (req, res) => {
     }
 
 });
-}
 
 module.exports = router;
