@@ -12,18 +12,39 @@ model User {
   name                 String
   email                String     @unique
   password             String
-  role                 String
-  schedule             schedule[] @relation("paciente")
-  scheduleProfissional schedule[] @relation("profissional")
+  createdAt            DateTime   @default(now())
+  role                 String //professor, aluno, paciente
+  schedule             Schedule[] @relation("paciente")
+  scheduleProfissional Schedule[] @relation("profissional")
+  scheduleProfessor    Schedule[] @relation("professor")
 }
 
-model schedule {
-  id             String @id @default(auto()) @map("_id") @db.ObjectId
+type Endereco {
+  rua    String
+  bairro String
+  numero Int
+}
+
+model Clinica {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  endereco  Endereco
+  tipo      String //psico, odonto, fisio
+  createdAt DateTime   @default(now())
+  Schedule  Schedule[]
+}
+
+model Schedule {
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
   dia            String
   horaInicio     String
   horaFim        String
-  pacienteId     String @db.ObjectId
-  profissionalId String @db.ObjectId
-  paciente       User   @relation(fields: [pacienteId], references: [id], name: "paciente")
-  profissional   User   @relation(fields: [profissionalId], references: [id], name: "profissional")
+  pacienteId     String  @db.ObjectId
+  profissionalId String  @db.ObjectId
+  professorId    String  @db.ObjectId
+  clinicaId      String  @db.ObjectId
+  paciente       User    @relation(fields: [pacienteId], references: [id], name: "paciente")
+  profissional   User    @relation(fields: [profissionalId], references: [id], name: "profissional")
+  professor      User    @relation(fields: [professorId], references: [id], name: "professor")
+  clinica        Clinica @relation(fields: [clinicaId], references: [id])
 }
