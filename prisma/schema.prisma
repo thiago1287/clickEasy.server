@@ -8,18 +8,22 @@ datasource db {
 }
 
 model User {
-  id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  email    String     @unique
-  password String
-  schedule schedule[]
+  id                   String     @id @default(auto()) @map("_id") @db.ObjectId
+  name                 String
+  email                String     @unique
+  password             String
+  role                 String
+  schedule             schedule[] @relation("paciente")
+  scheduleProfissional schedule[] @relation("profissional")
 }
 
 model schedule {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  dia        String
-  horaInicio String
-  horaFim    String
-  horarioId  String @db.ObjectId
-  horario    User   @relation(fields: [horarioId], references: [id])
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  dia            String
+  horaInicio     String
+  horaFim        String
+  pacienteId     String @db.ObjectId
+  profissionalId String @db.ObjectId
+  paciente       User   @relation(fields: [pacienteId], references: [id], name: "paciente")
+  profissional   User   @relation(fields: [profissionalId], references: [id], name: "profissional")
 }
