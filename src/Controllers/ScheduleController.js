@@ -5,14 +5,23 @@ const router = express.Router();
 
 router.post("/agendamento", async (req, res) => {
     const { userId, dia, horaInicio, horaFim } = req.body
-    //recuperar o userId
-    const user = await Name.findById(UserId).select('name');
 
     //criar horario
+    console.log(userId)
+    const profissional = await prisma.user.findUnique({
+        where: {
+            id: profissionalId,
+        },
+    })
+
+    if (profissional.role != 'profissional') {
+        return res.status(402).json({ msg: 'Esse profissionalId não é um profissional'})
+    }
     const schedule = await prisma.schedule.create({
         data: {
-            userId
-                dia,
+            pacienteId,
+            profissionalId,
+            dia,
             horaInicio,
             horaFim
         },
@@ -27,6 +36,5 @@ router.post("/agendamento", async (req, res) => {
     }
 
 });
-}
 
 module.exports = router;
