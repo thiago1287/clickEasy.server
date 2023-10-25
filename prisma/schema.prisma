@@ -9,21 +9,33 @@ datasource db {
 
 model User {
   id                   String     @id @default(auto()) @map("_id") @db.ObjectId
-  name                 String
-  email                String    @unique
+  nome                 String
+  email                String     @unique
   password             String
+  curso                String
+  turma                String
+  datadenascimento     String
+  telefone             String
+  sexo                 String
+  profissao            String
+  cpf                  String
+  estCivil             String
+  observacoes          String
+  nomePai              String
+  nomeMae              String
+  endereco             Endereco
   createdAt            DateTime   @default(now())
   role                 String //professor, aluno, paciente, profissional
   schedule             Schedule[] @relation("paciente")
   scheduleProfissional Schedule[] @relation("profissional")
   scheduleProfessor    Schedule[] @relation("professor")
-  curso                String
-  turma                String
-  prontuarioPaciente   Prontuario[] @relation("prontuario_paciente")
-  prontuarioAluno   Prontuario[] @relation("prontuario_aluno")
+
+  prontuarioPaciente Prontuario[] @relation("prontuario_paciente")
+  prontuarioAluno    Prontuario[] @relation("prontuario_aluno")
 }
 
 type Endereco {
+  cidade String
   rua    String
   bairro String
   numero Int
@@ -54,10 +66,9 @@ model Schedule {
 }
 
 model Prontuario {
-  id             String  @id @default(auto()) @map("_id") @db.ObjectId
-  pacienteId     String  @db.ObjectId
-  paciente      User    @relation(fields: [pacienteId], references: [id], name: "prontuario_paciente")
-  alunoId     String  @db.ObjectId
-  aluno       User    @relation(fields: [alunoId], references: [id], name: "prontuario_aluno")
-  
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  pacienteId String @db.ObjectId
+  paciente   User   @relation(fields: [pacienteId], references: [id], name: "prontuario_paciente")
+  alunoId    String @db.ObjectId
+  aluno      User   @relation(fields: [alunoId], references: [id], name: "prontuario_aluno")
 }
