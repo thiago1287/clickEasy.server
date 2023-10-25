@@ -9,17 +9,30 @@ router.post("/register", async(req,res) =>{
     if(!name){
       return res.status(400).json({msg: 'O nome é obrigatorio!'});
     }
-    if(!email){
-      return res.status(400).json({msg: 'O email é obrigatorio!'});
-    }
-    if(!password){
-      return res.status(400).json({msg: 'O senha é obrigatorio!'});
-    }
-    if(!confirmpassword){
-      return res.status(400).json({msg: 'Confirmar a senha é obrigatorio!'});
-    }
-    if(confirmpassword !== password){
-      return res.status(400).json({msg: 'A senha não esta igual'});
+    if (role === "professor" || role === "aluno" || role === "profissional") {
+      if(!email){
+        return res.status(400).json({msg: 'O email é obrigatorio!'});
+      }
+      if(!password){
+        return res.status(400).json({msg: 'O senha é obrigatorio!'});
+      }
+      if(!confirmpassword){
+        return res.status(400).json({msg: 'Confirmar a senha é obrigatorio!'});
+      }
+      if(confirmpassword !== password){
+        return res.status(400).json({msg: 'A senha não esta igual'});
+      }
+      const userExists = await prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+      })
+
+      if (userExists){
+        return res.status(422).json({msg: 'Por favor, utilize outro email!'})
+      }
+      const salt = await bcrypt.genSalt(12)
+      const passwordHash = await bcrypt.hash(password,salt)
     }
     if(!role){
       return res.status(400).json({msg: 'O cargo é obrigatório'})
@@ -27,20 +40,36 @@ router.post("/register", async(req,res) =>{
 
     //checando se o usuario existe// 
 
-    const userExists = await prisma.user.findUnique({
-        where: {
-          email: email,
-        },
-    })
 
-    if (userExists){
-        return res.status(422).json({msg: 'Por favor, utilize outro email!'})
-    }
 
     //senha
 
-    const salt = await bcrypt.genSalt(12)
-    const passwordHash = await bcrypt.hash(password,salt)
+    
+
+    // prisma.user.findFirst({
+    //   where:{
+    //     prontuarioPaciente:{
+    //       every:{
+    //         pacienteId:12
+    //       }
+    //     }
+    //   },
+    //   include:{
+    //     prontuarioPaciente:true
+    //   },
+      
+    // })
+
+    // prisma.prontuario.findMany({
+    //   where:{
+    //     pacienteId:12
+    //   },
+    //   include:{
+    //     paciente:true,
+    //     aluno:true
+    //   }
+      
+    // })
 
     //criar usuario
     if (role === 'professor') {
@@ -67,11 +96,10 @@ router.post("/register", async(req,res) =>{
       user = await prisma.user.create({
         data: {
           name,
-          email,
-          password: passwordHash,
           role,
         },
       });
+
     } else if (role === 'profissional') {
       user = await prisma.user.create({
         data: {
@@ -108,6 +136,7 @@ router.get("/alunos", async (req, res) => {
   });
 
 router.get("/pacientes", async (req, res) => {
+ 
     try {
       const users = await prisma.user.findMany({
         where: {
@@ -116,6 +145,7 @@ router.get("/pacientes", async (req, res) => {
       });
       res.status(200).json(users);
     } catch (error) {
+      console.log(error)
       res.status(500).json({ msg: "Erro ao buscar usuários" });
     }
   })
@@ -170,10 +200,6 @@ router.put("/user/:id", async (req, res) => {
     res.status(500).json({ msg: "Erro ao atualizar usuário" });
   }
 });
-
-
-
-
 
 
 module.exports = router;

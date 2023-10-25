@@ -10,13 +10,17 @@ datasource db {
 model User {
   id                   String     @id @default(auto()) @map("_id") @db.ObjectId
   name                 String
-  email                String     @unique
+  email                String    @unique
   password             String
   createdAt            DateTime   @default(now())
-  role                 String //professor, aluno, paciente
+  role                 String //professor, aluno, paciente, profissional
   schedule             Schedule[] @relation("paciente")
   scheduleProfissional Schedule[] @relation("profissional")
   scheduleProfessor    Schedule[] @relation("professor")
+  curso                String
+  turma                String
+  prontuarioPaciente   Prontuario[] @relation("prontuario_paciente")
+  prontuarioAluno   Prontuario[] @relation("prontuario_aluno")
 }
 
 type Endereco {
@@ -31,7 +35,7 @@ model Clinica {
   endereco  Endereco
   tipo      String //psico, odonto, fisio
   createdAt DateTime   @default(now())
-  Schedule  Schedule[]
+  Schedule  Schedule[] @relation("clinica")
 }
 
 model Schedule {
@@ -46,5 +50,14 @@ model Schedule {
   paciente       User    @relation(fields: [pacienteId], references: [id], name: "paciente")
   profissional   User    @relation(fields: [profissionalId], references: [id], name: "profissional")
   professor      User    @relation(fields: [professorId], references: [id], name: "professor")
-  clinica        Clinica @relation(fields: [clinicaId], references: [id])
+  clinica        Clinica @relation(fields: [clinicaId], references: [id], name: "clinica")
+}
+
+model Prontuario {
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  pacienteId     String  @db.ObjectId
+  paciente      User    @relation(fields: [pacienteId], references: [id], name: "prontuario_paciente")
+  alunoId     String  @db.ObjectId
+  aluno       User    @relation(fields: [alunoId], references: [id], name: "prontuario_aluno")
+  
 }
