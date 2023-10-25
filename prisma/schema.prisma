@@ -10,20 +10,21 @@ datasource db {
 model User {
   id                   String     @id @default(auto()) @map("_id") @db.ObjectId
   nome                 String
-  email                String     @unique
-  password             String
-  curso                String
-  turma                String
-  datadenascimento     String
-  telefone             String
-  sexo                 String
-  profissao            String
-  cpf                  String
-  estCivil             String
-  observacoes          String
-  nomePai              String
-  nomeMae              String
-  endereco             Endereco
+  email                String?     @unique
+  password             String?
+  curso                String?
+  turma                String?
+  datadenascimento     String?
+  telefone             String?
+  sexo                 String?
+  profissao            String?
+  cpf                  String?
+  estCivil             String?
+  observacoes          String?
+  nomePai              String?
+  nomeMae              String?
+  endereco             Endereco?
+  matricula            String
   createdAt            DateTime   @default(now())
   role                 String //professor, aluno, paciente, profissional
   schedule             Schedule[] @relation("paciente")
