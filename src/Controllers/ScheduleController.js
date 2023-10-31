@@ -111,4 +111,32 @@ router.put("/horarios/:id", async (req, res) => {
     }
 });
 
+router.delete("/horarios/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+
+        const horarioMarcado = await prisma.schedule.findUnique({
+            where: {
+                id: String(id),
+            },
+        });
+
+        if (!horarioMarcado) {
+            return res.status(404).json({ msg: "Horario não encontrado" });
+        }
+        const deleteHorario = await prisma.schedule.delete({
+            where: {
+                id: String(id),
+            },
+            data,
+        });
+
+        res.status(200).json({ msg: "Horario deletado" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Erro ao deletar horario" });
+    }
+});
+
 module.exports = router;
