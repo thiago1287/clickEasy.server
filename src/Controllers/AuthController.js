@@ -4,45 +4,61 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 
 
-router.post("/register", async(req,res) =>{
-    const{name, email, password, confirmpassword,role,turma,curso} = req.body
-    if(!name){
+router.post("/register/aluno", async(req,res) =>{
+  const{nome, email, password, confirmpassword,role,turma,curso,matricula} = req.body
+
+    if(!nome){
       return res.status(400).json({msg: 'O nome é obrigatorio!'});
     }
-    if (role === "professor" || role === "aluno" || role === "profissional") {
-      if(!email){
-        return res.status(400).json({msg: 'O email é obrigatorio!'});
-      }
-      if(!password){
-        return res.status(400).json({msg: 'O senha é obrigatorio!'});
-      }
-      if(!confirmpassword){
-        return res.status(400).json({msg: 'Confirmar a senha é obrigatorio!'});
-      }
-      if(confirmpassword !== password){
-        return res.status(400).json({msg: 'A senha não esta igual'});
-      }
-      const userExists = await prisma.user.findUnique({
-        where: {
-          email: email,
-        },
-      })
-
-      if (userExists){
-        return res.status(422).json({msg: 'Por favor, utilize outro email!'})
-      }
-      const salt = await bcrypt.genSalt(12)
-      const passwordHash = await bcrypt.hash(password,salt)
+    if(!email){
+      return res.status(400).json({msg: 'O email é obrigatorio!'});
     }
-    if(!role){
-      return res.status(400).json({msg: 'O cargo é obrigatório'})
+    if(!password){
+      return res.status(400).json({msg: 'O senha é obrigatorio!'});
     }
+    if(!confirmpassword){
+      return res.status(400).json({msg: 'Confirmar a senha é obrigatorio!'});
+    }
+    if(confirmpassword !== password){
+      return res.status(400).json({msg: 'A senha não esta igual'});
+    }
+    if(!turma){
+      return res.status(400).json({msg: 'A turma é obrigatorio'});
+    }
+    if(!curso){
+      return res.status(400).json({msg: 'A turma é obrigatorio'});
+    }
+    if(!matricula){
+      return res.status(400).json({msg: 'A matricula é obrigatorio'});
+    }
+    if(role != "aluno"|| !role){ 
+      return res.status(400).json({msg: 'O cargo não é valido ou estar vazio'})
+    }
+    const userExists = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    })
 
-    //checando se o usuario existe// 
+    if (userExists){
+      return res.status(422).json({msg: 'Por favor, utilize outro email!'})
+    }
+    const salt = await bcrypt.genSalt(12)
+    const passwordHash = await bcrypt.hash(password,salt)
+  
+    
 
-
-
-    //senha
+    user = await prisma.user.create({
+      data: {
+        nome,
+        email,
+        password: passwordHash,
+        role,
+        turma,
+        curso,
+        matricula
+      },
+    });
 
     
 
@@ -72,44 +88,35 @@ router.post("/register", async(req,res) =>{
     // })
 
     //criar usuario
-    if (role === 'professor') {
-      user = await prisma.user.create({
-        data: {
-          name,
-          email,
-          password: passwordHash,
-          role,
-        },
-      });
-    } else if (role === 'aluno') {
-      user = await prisma.user.create({
-        data: {
-          name,
-          email,
-          password: passwordHash,
-          role,
-          turma,
-          curso,
-        },
-      });
-    } else if (role === 'paciente') {
-      user = await prisma.user.create({
-        data: {
-          name,
-          role,
-        },
-      });
+    // if (role === 'professor') {
+    //   user = await prisma.user.create({
+    //     data: {
+    //       name,
+    //       email,
+    //       password: passwordHash,
+    //       role,
+    //     },
+    //   });
+    // } else if (role === 'aluno') {
+      
+    // } else if (role === 'paciente') {
+    //   user = await prisma.user.create({
+    //     data: {
+    //       name,
+    //       role,
+    //     },
+    //   });
 
-    } else if (role === 'profissional') {
-      user = await prisma.user.create({
-        data: {
-          name,
-          email,
-          password: passwordHash,
-          role,
-        },
-      });
-    }
+    // } else if (role === 'profissional') {
+    //   user = await prisma.user.create({
+    //     data: {
+    //       name,
+    //       email,
+    //       password: passwordHash,
+    //       role,
+    //     },
+    //   });
+    // }
 
     try{
         res.status(201).json({msg:'Usuario cadastrado com sucesso'})
