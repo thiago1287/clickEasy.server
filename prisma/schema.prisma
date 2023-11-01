@@ -8,39 +8,40 @@ datasource db {
 }
 
 model User {
-  id                   String     @id @default(auto()) @map("_id") @db.ObjectId
-  nome                 String
-  email                String?     
-  password             String?
-  curso                String?
-  turma                String?
-  datadenascimento     String?
-  telefone             String?
-  sexo                 String?
-  profissao            String?
-  cpf                  String?
-  estCivil             String?
-  observacoes          String?
-  nomePai              String?
-  nomeMae              String?
-  endereco             Endereco?
-  matricula            String?
-  createdAt            DateTime   @default(now())
-  role                 Role //professor, aluno, paciente, profissional
-  schedule             Schedule[] @relation("paciente")
-  scheduleProfissional Schedule[] @relation("profissional")
-  scheduleProfessor    Schedule[] @relation("professor")
+  id                      String        @id @default(auto()) @map("_id") @db.ObjectId
+  nome                    String
+  email                   String?     @unique
+  password                String?
+  curso                   String?
+  turma                   String?
+  datadenascimento        String?
+  telefone                String?
+  sexo                    String?
+  profissao               String?
+  cpf                     String?
+  estCivil                String?
+  observacoes             String?
+  nomePai                 String?
+  nomeMae                 String?
+  endereco                Endereco?
+  matricula               String?
+  createdAt               DateTime      @default(now())
+  role                    Role //professor, aluno, paciente, profissional
+  agendamento             Agendamento[] @relation("paciente")
+  agendamentoProfissional Agendamento[] @relation("profissional")
+  agendamentoProfessor    Agendamento[] @relation("professor")
 
   prontuarioPaciente Prontuario[] @relation("prontuario_paciente")
   prontuarioAluno    Prontuario[] @relation("prontuario_aluno")
 }
 
-enum Role{
+enum Role {
   professor
   aluno
   paciente
   profissional
 }
+
 type Endereco {
   cidade String
   rua    String
@@ -49,15 +50,15 @@ type Endereco {
 }
 
 model Clinica {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  endereco  Endereco
-  tipo      String //psico, odonto, fisio
-  createdAt DateTime   @default(now())
-  Schedule  Schedule[] @relation("clinica")
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  endereco    Endereco
+  tipo        String //psico, odonto, fisio
+  createdAt   DateTime      @default(now())
+  agendamento Agendamento[] @relation("clinica")
 }
 
-model Schedule {
+model Agendamento {
   id             String  @id @default(auto()) @map("_id") @db.ObjectId
   dia            String
   horaInicio     String
