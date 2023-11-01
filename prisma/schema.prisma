@@ -10,7 +10,7 @@ datasource db {
 model User {
   id                   String     @id @default(auto()) @map("_id") @db.ObjectId
   nome                 String
-  email                String?     @unique
+  email                String?     
   password             String?
   curso                String?
   turma                String?
@@ -24,9 +24,9 @@ model User {
   nomePai              String?
   nomeMae              String?
   endereco             Endereco?
-  matricula            String
+  matricula            String?
   createdAt            DateTime   @default(now())
-  role                 String //professor, aluno, paciente, profissional
+  role                 Role //professor, aluno, paciente, profissional
   schedule             Schedule[] @relation("paciente")
   scheduleProfissional Schedule[] @relation("profissional")
   scheduleProfessor    Schedule[] @relation("professor")
@@ -35,6 +35,12 @@ model User {
   prontuarioAluno    Prontuario[] @relation("prontuario_aluno")
 }
 
+enum Role{
+  professor
+  aluno
+  paciente
+  profissional
+}
 type Endereco {
   cidade String
   rua    String

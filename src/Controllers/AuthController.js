@@ -31,9 +31,7 @@ router.post("/register/aluno", async(req,res) =>{
     if(!matricula){
       return res.status(400).json({msg: 'A matricula é obrigatorio'});
     }
-    if(role != "aluno"|| !role){ 
-      return res.status(400).json({msg: 'O cargo não é valido ou estar vazio'})
-    }
+    
     const userExists = await prisma.user.findUnique({
       where: {
         email: email,
@@ -53,70 +51,139 @@ router.post("/register/aluno", async(req,res) =>{
         nome,
         email,
         password: passwordHash,
-        role,
         turma,
         curso,
-        matricula
+        matricula,
+        role:"aluno"
       },
     });
 
     
 
-    // prisma.user.findFirst({
-    //   where:{
-    //     prontuarioPaciente:{
-    //       every:{
-    //         pacienteId:12
-    //       }
-    //     }
-    //   },
-    //   include:{
-    //     prontuarioPaciente:true
-    //   },
-      
-    // })
 
-    // prisma.prontuario.findMany({
-    //   where:{
-    //     pacienteId:12
-    //   },
-    //   include:{
-    //     paciente:true,
-    //     aluno:true
-    //   }
-      
-    // })
+    try{
+        res.status(201).json({msg:'Usuario cadastrado com sucesso'})
+        
+    }catch(error){
+        res.status(500).json({msg:error})
 
-    //criar usuario
-    // if (role === 'professor') {
-    //   user = await prisma.user.create({
-    //     data: {
-    //       name,
-    //       email,
-    //       password: passwordHash,
-    //       role,
-    //     },
-    //   });
-    // } else if (role === 'aluno') {
-      
-    // } else if (role === 'paciente') {
-    //   user = await prisma.user.create({
-    //     data: {
-    //       name,
-    //       role,
-    //     },
-    //   });
+    }
+    
+})
 
-    // } else if (role === 'profissional') {
-    //   user = await prisma.user.create({
-    //     data: {
-    //       name,
-    //       email,
-    //       password: passwordHash,
-    //       role,
-    //     },
-    //   });
-    // }
+
+
+
+router.post("/register/professor", async(req,res) =>{
+  const{nome, email, password, confirmpassword,role,turma,curso,} = req.body
+
+    if(!nome){
+      return res.status(400).json({msg: 'O nome é obrigatorio!'});
+    }
+    if(!email){
+      return res.status(400).json({msg: 'O email é obrigatorio!'});
+    }
+    if(!password){
+      return res.status(400).json({msg: 'O senha é obrigatorio!'});
+    }
+    if(!confirmpassword){
+      return res.status(400).json({msg: 'Confirmar a senha é obrigatorio!'});
+    }
+    if(confirmpassword !== password){
+      return res.status(400).json({msg: 'A senha não esta igual'});
+    }
+    if(!turma){
+      return res.status(400).json({msg: 'A turma é obrigatorio'});
+    }
+    if(!curso){
+      return res.status(400).json({msg: 'A turma é obrigatorio'});
+    }
+
+
+    const userExists = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    })
+
+    if (userExists){
+      return res.status(422).json({msg: 'Por favor, utilize outro email!'})
+    }
+    const salt = await bcrypt.genSalt(12)
+    const passwordHash = await bcrypt.hash(password,salt)
+  
+    
+
+    user = await prisma.user.create({
+      data: {
+        nome,
+        email,
+        password: passwordHash,
+        turma,
+        curso,
+        role:"professor"
+      },
+    });
+
+
+    try{
+        res.status(201).json({msg:'Usuario cadastrado com sucesso'})
+        
+    }catch(error){
+        res.status(500).json({msg:error})
+
+    }
+    
+})
+
+
+router.post("/register/paciente", async(req,res) =>{
+  const{nome,role , nomePai, nomeMae, datadenascimento, telefone, sexo, cpf, estCivil, observacoes,rua ,bairro, cidade, numero} = req.body
+
+    if(!nome){
+      return res.status(400).json({msg: 'O nome é obrigatorio!'});
+    }
+    if(!datadenascimento){
+      return res.status(400).json({msg: 'A data de nascimento é obrigatorio'});
+    }
+    if(!nomePai){
+      return res.status(400).json({msg: 'O nome do pai é obrigatorio'});
+    }
+    if(!nomeMae){
+      return res.status(400).json({msg: 'O nome da mãe é obrigatorio'});
+    }
+    if(!sexo){
+      return res.status(400).json({msg: 'O sexo é obrigatorio'});
+    }
+    if(!telefone){
+      return res.status(400).json({msg: 'O telefone é obrigatorio'});
+    }
+    if(!cpf){
+      return res.status(400).json({msg: 'O cpf é obrigatorio'});
+    }
+    if(!estCivil){
+      return res.status(400).json({msg: 'O Estado civil é obrigatorio'});
+    }
+    
+
+
+    user = await prisma.user.create({
+      data: {
+        nome,
+        nomeMae,
+        nomePai,
+        datadenascimento,
+        telefone,
+        sexo,
+        cpf,
+        estCivil,
+        observacoes,
+        role:"paciente",
+        endereco:{rua,bairro,cidade,numero}
+
+      },
+    });
+
 
     try{
         res.status(201).json({msg:'Usuario cadastrado com sucesso'})
