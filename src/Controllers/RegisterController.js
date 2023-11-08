@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
 
-class AuthController {
+class registerController {
 
   static async cadastrarAluno(req, res) {
     const { nome, email, password, confirmedpassword, role, turma, curso, matricula } = req.body
@@ -33,7 +33,7 @@ class AuthController {
       return res.status(400).json({ msg: 'A matricula é obrigatorio' });
     }
 
-    const userExists = await prisma.user.findUnique({
+    const userExists = await prisma.user.findFirst({
       where: {
         email: String(email),
       },
@@ -98,7 +98,7 @@ class AuthController {
     }
 
 
-    const userExists = await prisma.user.findUnique({
+    const userExists = await prisma.user.findFirst({
       where: {
         email: email,
       },
@@ -191,9 +191,9 @@ class AuthController {
 
     }
     
-})
+}
 
-router.post("/register/profissional", async(req,res) =>{
+  static async cadastrarPaciente(req, res) {
   const{nome, email, password, confirmpassword,role,curso,} = req.body
 
     if(!nome){
@@ -215,7 +215,7 @@ router.post("/register/profissional", async(req,res) =>{
       return res.status(400).json({msg: 'O Curso é obrigatório'});
     }
 
-    const userExists = await prisma.user.findUnique({
+    const userExists = await prisma.user.findFirst({
       where: {
         email: email,
       },
@@ -277,7 +277,7 @@ router.post("/register/profissional", async(req,res) =>{
       console.log(error)
       res.status(500).json({ msg: "Erro ao buscar usuários" });
     }
-  })
+  }
 
   //puxar usuario unico pelo id
   static async listarUserPorId(req, res) {
@@ -328,7 +328,6 @@ router.post("/register/profissional", async(req,res) =>{
     console.error(error);
     res.status(500).json({ msg: "Erro ao atualizar usuário" });
   }
-});
-
-
-export default AuthController;
+};
+}
+export default registerController;
