@@ -193,7 +193,7 @@ class registerController {
     
 }
 
-  static async cadastrarPaciente(req, res) {
+  static async cadastrarProfissional(req, res) {
   const{nome, email, password, confirmpassword,role,curso,} = req.body
 
     if(!nome){
