@@ -1,9 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 class AgendamentoController {
-
     static async listarAgendamento(req, res) {
         try {
             const agendamento = await prisma.agendamento.findMany({});
@@ -11,11 +10,11 @@ class AgendamentoController {
         } catch (error) {
             res.status(500).json({ msg: "Erro ao buscar agendamento" });
         }
-    };
+    }
 
     static async listarAgendamentoPorId(req, res) {
         try {
-            const { id } = req.params.id;
+            const { id } = req.params;
             const horarioEncontrado = await prisma.agendamento.findUnique({
                 where: {
                     id: String(id),
@@ -26,34 +25,32 @@ class AgendamentoController {
                 return res.status(404).json({ msg: "Horario não encontrado" });
             }
 
-            res.status(200).json(user);
-
+            res.status(200).json(horarioEncontrado);
         } catch (error) {
             res.status(500).json({ msg: "Erro ao buscar horario" });
         }
-    };
+    }
 
     static async cadastrarAgendamento(req, res) {
-        const { userId, dia, horaInicio, horaFim, paciente, aluno } = req.body
-
-        const agendamento = await prisma.agendamento.create({
-            data: {
-                userId,
-                dia,
-                horaInicio,
-                horaFim,
-                paciente,
-                aluno
-            },
-        });
+        const { userId, dia, horaInicio, horaFim, paciente, aluno } = req.body;
 
         try {
-            res.status(201).json({ msg: 'Horario Registrado' })
-            return agendamento;
+            const agendamento = await prisma.agendamento.create({
+                data: {
+                    userId,
+                    dia,
+                    horaInicio,
+                    horaFim,
+                    paciente,
+                    aluno,
+                },
+            });
+
+            res.status(201).json({ msg: 'Horario Registrado' });
         } catch (error) {
-            res.status(500).json({ msg: error })
+            res.status(500).json({ msg: error });
         }
-    };
+    }
 
     static async atualizarAgendamento(req, res) {
         const { id } = req.params;
@@ -69,6 +66,7 @@ class AgendamentoController {
             if (!horarioMarcado) {
                 return res.status(404).json({ msg: "Horario não encontrado" });
             }
+
             const horarioAtualizado = await prisma.agendamento.update({
                 where: {
                     id: String(id),
@@ -81,13 +79,12 @@ class AgendamentoController {
             console.error(error);
             res.status(500).json({ msg: "Erro ao atualizar horario" });
         }
-    };
+    }
 
     static async deletarAgendamento(req, res) {
         const { id } = req.params;
 
         try {
-
             const horarioMarcado = await prisma.agendamento.findUnique({
                 where: {
                     id: String(id),
@@ -97,11 +94,11 @@ class AgendamentoController {
             if (!horarioMarcado) {
                 return res.status(404).json({ msg: "Horario não encontrado" });
             }
-            const horarioDeletado = await prisma.agendamento.delete({
+
+            await prisma.agendamento.delete({
                 where: {
                     id: String(id),
                 },
-                data,
             });
 
             res.status(200).json({ msg: "Horario deletado" });
@@ -109,7 +106,7 @@ class AgendamentoController {
             console.error(error);
             res.status(500).json({ msg: "Erro ao deletar horario" });
         }
-    };
+    }
 }
 
 export default AgendamentoController;
