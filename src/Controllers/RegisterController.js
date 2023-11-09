@@ -142,8 +142,8 @@ class registerController {
 
 }
 
-  static async cadastrarProfissional(req, res) {
-  const { nome, email, password, confirmpassword, role, curso, } = req.body
+  static async cadastrarPaciente(req, res) {
+  const{nome, email, password, confirmpassword,role,curso,} = req.body
 
     if (!nome) return sendError('O nome é obrigatório!');
     if (!email) return sendError('O email é obrigatório!');
