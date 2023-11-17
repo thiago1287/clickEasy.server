@@ -32,22 +32,39 @@ class AgendamentoController {
     }
 
     static async cadastrarAgendamento(req, res) {
-        const { userId, dia, horaInicio, horaFim, paciente, aluno } = req.body;
-
+        const { pacienteId, dia, horaInicio, horaFim, profissionalId, professorId, clinicaId } = req.body;
         try {
-            const agendamento = await prisma.agendamento.create({
-                data: {
-                    userId,
+            
+            const existeHorario = await prisma.agendamento.findFirst({
+                where: {
                     dia,
                     horaInicio,
                     horaFim,
-                    paciente,
-                    aluno,
+                    profissionalId,
+                    clinicaId,
+                    professorId
+                }
+            })
+            
+            if(existeHorario) {
+                return res.status(400).json({ msg: 'Horário já cadastrado' });
+            }
+        
+           await prisma.agendamento.create({
+                data: {
+                    dia,
+                    horaFim,
+                    horaInicio,
+                    pacienteId,
+                    profissionalId,
+                    clinicaId,
+                    professorId
                 },
             });
-
-            res.status(201).json({ msg: 'Horario Registrado' });
+          
+            res.status(201).json({ msg: 'Horário Registrado' });
         } catch (error) {
+            console.log(error)
             res.status(500).json({ msg: error });
         }
     }
