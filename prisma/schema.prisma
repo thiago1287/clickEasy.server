@@ -49,11 +49,17 @@ type Endereco {
   numero Int
 }
 
+enum TipoClinica {
+  psicologia
+  odontologia
+  fisioterapia
+}
+
 model Clinica {
   id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
+  nome        String
   endereco    Endereco
-  tipo        String //psico, odonto, fisio
+  tipo        String //psicologia, odontologia, fisioterapia
   createdAt   DateTime      @default(now())
   agendamento Agendamento[] @relation("clinica")
 }

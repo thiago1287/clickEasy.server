@@ -2,13 +2,11 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient()
-
-function sendError(msg) { return res.status(400).json({ msg }); }
 class registerController {
 
   static async cadastrarAluno(req, res) {
     const { nome, email, password, confirmedpassword, role, turma, curso, matricula } = req.body
-
+    function sendError(msg) { return res.status(400).json({ msg }); }
     if (!nome) return sendError('O nome é obrigatório!');
     if (!email) return sendError('O email é obrigatório!');
     if (!password) return sendError('A senha é obrigatória!');
@@ -57,7 +55,7 @@ class registerController {
 
   static async cadastrarProfessor(req, res) {
   const { nome, email, password, confirmedpassword, role, turma, curso, } = req.body
-
+  function sendError(msg) { return res.status(400).json({ msg }); }
   if (!nome) return sendError('O nome é obrigatório!');
   if (!email) return sendError('O email é obrigatório!');
   if (!password) return sendError('A senha é obrigatória!');
@@ -103,8 +101,8 @@ class registerController {
 
 
   static async cadastrarPaciente(req, res) {
-  const { nome, role, nomePai, nomeMae, datadenascimento, telefone, sexo, cpf, estCivil, observacoes, rua, bairro, cidade, numero } = req.body
-
+    const { nome, role, nomePai, nomeMae, datadenascimento, telefone, sexo, cpf, estCivil, observacoes, rua, bairro, cidade, numero } = req.body
+    function sendError(msg) { return res.status(400).json({ msg }); }
     if (!nome) return sendError('O nome é obrigatório!');
     if (!datadenascimento) return sendError('A data de nascimento é obrigatorio!');
     if (!nomePai) return sendError('O nome do pai é obrigatorio!');
@@ -142,9 +140,9 @@ class registerController {
 
 }
 
-  static async cadastrarPaciente(req, res) {
-  const{nome, email, password, confirmpassword,role,curso,} = req.body
-
+  static async cadastrarProfissional(req, res) {
+    const{nome, email, password, confirmpassword,role,curso,} = req.body
+    function sendError(msg) { return res.status(400).json({ msg }); }
     if (!nome) return sendError('O nome é obrigatório!');
     if (!email) return sendError('O email é obrigatório!');
     if (!password) return sendError('A senha é obrigatória!');
