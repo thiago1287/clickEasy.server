@@ -1,33 +1,28 @@
+import jwt from "jsonwebtoken";
 
-import pkg from 'jsonwebtoken';
-const { verify, decode } = pkg;
+const { verify, decode } = jwt;
 
+import { secret } from "../config/jsonSecret.js";
 
-import { secret } from '../config/jsonSecret.js';
+export default async (req, res, next) => {
+  const token = req.headers.authorization;
 
+  if (!token) {
+    return res.status(401).send("Access token nao informado");
+  }
 
-export default async(req,res,next)=>{
-    const token = req.headers.authorization
+  const [, acessToken] = token.split(" ");
 
-    if (!token){
-        return res.status(401).send('Access token nao informado')
-    }
+  try {
+    verify(acessToken, secret.secret);
 
-    const[,acessToken] = token.split(" ")
+    const { id, email } = await decode(acessToken);
 
-    try{
-        verify(acessToken,secret.secret)
+    req.usuarioId = id;
+    req.usuarioEmail = email;
 
-        const {id,email} = await decode(acessToken)
-
-        req.usuarioId = id
-        req.usuarioEmail = email
-
-        return next()
-    }  
-    catch(error){
-        res.status(401).send('Usario não autorizado')
-    }
-    }
-
-    
+    return next();
+  } catch (error) {
+    return res.status(401).send("Usario não autorizado");
+  }
+};
