@@ -35,7 +35,7 @@ class ClinicaController {
         const { nome, rua, bairro, cidade, numero, tipo } = req.body;
         try {
 
-            const existeHorario = await prisma.clinica.findFirst({
+            const clinicaExistente = await prisma.clinica.findFirst({
                 where: {
                     nome,
                     endereco: { rua, bairro, cidade, numero },
@@ -43,7 +43,7 @@ class ClinicaController {
                 }
             })
 
-            if (existeHorario) {
+            if (clinicaExistente) {
                 return res.status(400).json({ msg: 'Clinica já cadastrado' });
             }
 
@@ -66,7 +66,7 @@ class ClinicaController {
         const { nome, rua, bairro, cidade, numero, tipo } = req.body;
         try {
 
-            const existeHorario = await prisma.clinica.findFirst({
+            const clinicaExistente = await prisma.clinica.findFirst({
                 where: {
                     nome,
                     endereco: { rua, bairro, cidade, numero },
@@ -74,7 +74,7 @@ class ClinicaController {
                 }
             })
 
-            if (existeHorario) {
+            if (clinicaExistente) {
                 return res.status(400).json({ msg: 'Clinica já cadastrado' });
             }
 
@@ -97,7 +97,7 @@ class ClinicaController {
         const { nome, rua, bairro, cidade, numero, tipo } = req.body;
         try {
 
-            const existeHorario = await prisma.clinica.findFirst({
+            const clinicaExistente = await prisma.clinica.findFirst({
                 where: {
                     nome,
                     endereco: { rua, bairro, cidade, numero },
@@ -105,7 +105,7 @@ class ClinicaController {
                 }
             })
 
-            if (existeHorario) {
+            if (clinicaExistente) {
                 return res.status(400).json({ msg: 'Clinica já cadastrado' });
             }
 
