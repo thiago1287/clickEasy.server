@@ -12,9 +12,12 @@ export default async (req, res, next) => {
   }
 
   const [, acessToken] = token.split(" ");
+  
 
   try {
-    verify(acessToken, secret.secret);
+    
+    verify(acessToken, secret);
+    
 
     const { id, email } = await decode(acessToken);
 
@@ -23,6 +26,7 @@ export default async (req, res, next) => {
 
     return next();
   } catch (error) {
-    return res.status(401).send("Usario não autorizado");
+      return res.status(401).send("Usario não autorizado");
+    
   }
 };

@@ -8,7 +8,6 @@ const prisma = new PrismaClient();
 export default class AuthController {
   static async login(req, res) {
     const { email, password } = req.body;
-    console.log("ruela");
     try {
       const usuario = await prisma.user.findFirst({
         select: {
@@ -25,7 +24,7 @@ export default class AuthController {
         throw new Error("Usuário não cadastrado");
       }
 
-      const senhaIguais = await bcrypt.compare(password, usuario.password); // Utilizando a função compare do bcrypt
+      const senhaIguais = await bcrypt.compare(password, usuario.password); 
 
       if (!senhaIguais) {
         throw new Error("Senha inválida");
