@@ -51,7 +51,7 @@ class ClinicaController {
                 data: {
                     nome,
                     endereco: { rua, bairro, cidade, numero },
-                    tipo
+                    tipo: "psicologia"
                 },
             });
 
