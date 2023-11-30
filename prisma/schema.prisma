@@ -10,7 +10,7 @@ datasource db {
 model User {
   id                      String        @id @default(auto()) @map("_id") @db.ObjectId
   nome                    String
-  email                   String?       
+  email                   String?
   password                String?
   curso                   String?
   turma                   String?
@@ -31,11 +31,10 @@ model User {
   agendamentoProfissional Agendamento[] @relation("profissional")
   agendamentoProfessor    Agendamento[] @relation("professor")
 
-  prontuarioPaciente Prontuario[] @relation("prontuario_paciente")
-  prontuarioAluno    Prontuario[] @relation("prontuario_aluno")
-  prontuarioProfessor Prontuario[] @relation("prontuario_professor")
-  prontuarioProfissional    Prontuario[] @relation("prontuario_profissional")
- 
+  prontuarioPaciente     Prontuario[] @relation("prontuario_paciente")
+  prontuarioAluno        Prontuario[] @relation("prontuario_aluno")
+  prontuarioProfessor    Prontuario[] @relation("prontuario_professor")
+  prontuarioProfissional Prontuario[] @relation("prontuario_profissional")
 }
 
 enum Role {
@@ -65,7 +64,7 @@ model Clinica {
   tipo        String //psicologia, odontologia, fisioterapia
   createdAt   DateTime      @default(now())
   agendamento Agendamento[] @relation("clinica")
-  Prontuario  Prontuario[] @relation("clinica")
+  Prontuario  Prontuario[]  @relation("clinica")
 }
 
 model Agendamento {
@@ -73,28 +72,27 @@ model Agendamento {
   dia            String
   horaInicio     String
   horaFim        String
-  pacienteId     String  @db.ObjectId
-  profissionalId String  @db.ObjectId
-  professorId    String  @db.ObjectId
+  pacienteId     String? @db.ObjectId
+  profissionalId String? @db.ObjectId
+  professorId    String? @db.ObjectId
   clinicaId      String  @db.ObjectId
-  paciente       User    @relation(fields: [pacienteId], references: [id], name: "paciente")
-  profissional   User    @relation(fields: [profissionalId], references: [id], name: "profissional")
-  professor      User    @relation(fields: [professorId], references: [id], name: "professor")
+  paciente       User?   @relation(fields: [pacienteId], references: [id], name: "paciente")
+  profissional   User?   @relation(fields: [profissionalId], references: [id], name: "profissional")
+  professor      User?   @relation(fields: [professorId], references: [id], name: "professor")
   clinica        Clinica @relation(fields: [clinicaId], references: [id], name: "clinica")
 }
 
 model Prontuario {
-  id             String  @id @default(auto()) @map("_id") @db.ObjectId
-  medicacao    String
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  observacoes    String?
   pacienteId     String?  @db.ObjectId
   profissionalId String?  @db.ObjectId
   professorId    String?  @db.ObjectId
-  alunoId      String?  @db.ObjectId
+  alunoId        String?  @db.ObjectId
   clinicaId      String?  @db.ObjectId
   paciente       User?    @relation(fields: [pacienteId], references: [id], name: "prontuario_paciente")
   profissional   User?    @relation(fields: [profissionalId], references: [id], name: "prontuario_profissional")
   professor      User?    @relation(fields: [professorId], references: [id], name: "prontuario_professor")
-  aluno     User?    @relation(fields: [alunoId], references: [id], name: "prontuario_aluno")
+  aluno          User?    @relation(fields: [alunoId], references: [id], name: "prontuario_aluno")
   clinica        Clinica? @relation(fields: [clinicaId], references: [id], name: "clinica")
- 
 }

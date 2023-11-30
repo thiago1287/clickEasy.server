@@ -6,7 +6,7 @@ class ProntuarioController {
   static async cadastrarProntuario(req, res) {
     const {
       pacienteId,
-      medicacao,
+      observacoes,
       profissionalId,
       professorId,
       clinicaId,
@@ -15,7 +15,7 @@ class ProntuarioController {
     try {
       const prontuario = await prisma.prontuario.create({
         data: {
-          medicacao,
+          observacoes,
           alunoId,
           pacienteId,
           profissionalId,
@@ -70,26 +70,26 @@ class ProntuarioController {
 
   static async alterarProntuario(req, res) {
     const { id } = req.params;
-    const { medicacao } = req.body;
+    const { observacoes } = req.body;
     try {
       const prontuarioAtualizado = await prisma.prontuario.update({
         where: {
           id: String(id),
         },
         data: {
-          medicacao,
+          observacoes,
         },
       });
 
       res.status(200).json({
-        msg: "Medicação do prontuário atualizada",
+        msg: "Observações do prontuário atualizada",
         prontuario: prontuarioAtualizado,
       });
     } catch (error) {
       console.log(error);
       res
         .status(500)
-        .json({ msg: "Erro ao atualizar a medicação do prontuário" });
+        .json({ msg: "Erro ao atualizar as observações do prontuário" });
     }
   }
 
