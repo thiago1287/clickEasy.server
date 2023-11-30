@@ -132,7 +132,7 @@ class registerController {
     if (!telefone) return sendError("O telefone é obrigatorio!");
     if (!cpf) return sendError("O CPF é obrigatorio!");
     if (!estCivil) return sendError("O estado civil é obrigatorio!");
-
+    let user;
     const salt = await bcrypt.genSalt(12);
     const cpfHash = await bcrypt.hash(cpf, salt);
     user = await prisma.user.create({
