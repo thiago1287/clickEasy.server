@@ -7,7 +7,7 @@ const app = express();
 routes(app);
 
 app.listen(PORT, () => {
-    console.log("server online!")
+    console.log("server online! Na porta:",PORT)
 });
 
 export default app
