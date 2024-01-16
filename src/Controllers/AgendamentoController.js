@@ -32,7 +32,7 @@ class AgendamentoController {
     }
 
     static async cadastrarAgendamento(req, res) {
-        const { pacienteId, dia, horaInicio, horaFim, profissionalId, professorId, clinicaId } = req.body;
+        const { pacienteId, dia, horaInicio, horaFim, profissionalId, clinicaId } = req.body;
         try {
             
             const existeHorario = await prisma.agendamento.findFirst({
@@ -40,9 +40,9 @@ class AgendamentoController {
                     dia,
                     horaInicio,
                     horaFim,
+                    pacienteId,
                     profissionalId,
                     clinicaId,
-                    professorId
                 }
             })
             
@@ -58,7 +58,6 @@ class AgendamentoController {
                     pacienteId,
                     profissionalId,
                     clinicaId,
-                    professorId
                 },
             });
           

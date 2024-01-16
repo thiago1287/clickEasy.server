@@ -3,7 +3,7 @@ import ClinicaController from "../Controllers/ClinicaController.js";
 
 const routes = express.Router()
 
-routes.get("/clinica", ClinicaController.listarClinicas);
+routes.get("/clinicas", ClinicaController.listarClinicas);
 routes.get("/clinica/:id", ClinicaController.listarClinicaPorId);
 routes.post("/clinica/psico", ClinicaController.cadastrarClinicaPsico);
 routes.post("/clinica/odonto", ClinicaController.cadastrarClinicaOdonto);

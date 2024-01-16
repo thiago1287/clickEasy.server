@@ -159,7 +159,7 @@ class registerController {
   }
 
   static async cadastrarProfissional(req, res) {
-    const { nome, email, password, confirmpassword, role, curso } = req.body;
+    const { nome, email, password, confirmedpassword, role, curso } = req.body;
     function sendError(msg) {
       return res.status(400).json({ msg });
     }
@@ -184,13 +184,13 @@ class registerController {
     const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    user = await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         nome,
         email,
         password: passwordHash,
         curso,
-        role: "Profissional",
+        role: "profissional",
       },
     });
 
@@ -229,6 +229,21 @@ class registerController {
     }
   }
 
+  static async listarProfissionais(req, res) {
+    try {
+      const users = await prisma.user.findMany({
+        where: {
+          role: "profissional",
+        },
+      });
+      res.status(200).json(users);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "Erro ao buscar usuários" });
+    }
+  }
+
+  
   //puxar usuario unico pelo id
   static async listarUserPorId(req, res) {
     const { id } = req.params;
